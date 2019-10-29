@@ -1,9 +1,11 @@
 package pw.react.backend.reactbackend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -25,8 +27,7 @@ public class UserController {
     public String retrieveByLogin(@PathVariable String login) {
         User user = repository.findByLogin(login);
         if (user == null)
-            //throw  new ResourceNotFoundException("User","login", login);
-            return "No user found";
+            throw  new ResourceNotFoundException("User","login", login);
         return user.toString();
     }
 
@@ -46,5 +47,26 @@ public class UserController {
         return "Error";
     }
 
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Object> updateStudent(@RequestBody User user, @PathVariable long id) {
+
+        Optional<User> studentOptional = repository.findById(id);
+
+        if (!studentOptional.isPresent())
+            throw new ResourceNotFoundException("User", "id", id);
+
+        user.setId(id);
+        repository.save(user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteStudent(@PathVariable long id) {
+        if(repository.findById(id).isPresent())
+            repository.deleteById(id);
+        else
+            throw new ResourceNotFoundException("User", "id", id);
+    }
 
 }
