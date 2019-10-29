@@ -18,7 +18,7 @@ public class UserController {
         this.repository = userRepository;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> findAll() {
         return repository.findAll();
     }
