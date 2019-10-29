@@ -49,7 +49,7 @@ public class UserController {
 
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateStudent(@RequestBody User user, @PathVariable long id) {
+    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable long id) {
 
         Optional<User> studentOptional = repository.findById(id);
 
@@ -62,11 +62,21 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteStudent(@PathVariable long id) {
+    public void deleteUser(@PathVariable long id) {
         if(repository.findById(id).isPresent())
             repository.deleteById(id);
         else
             throw new ResourceNotFoundException("User", "id", id);
+    }
+
+    @GetMapping("/getbyid/{id}")
+    public User retrieveById(@PathVariable long id) {
+        Optional<User> student = repository.findById(id);
+
+        if (!student.isPresent())
+            throw new ResourceNotFoundException("User","id", id);
+
+        return student.get();
     }
 
 }
