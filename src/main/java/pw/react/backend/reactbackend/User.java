@@ -1,40 +1,42 @@
 package pw.react.backend.reactbackend;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.*;
 
 // id, login, first name, last name, date of birth, an indicator saying if a user is active or not.
 @Entity
-@Table(name = "user", schema = "my_schema")
+@Table(name = "users")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", unique = true)
-    private Long id;
+    @Column(name="id")
+    private long id;
 
-    @Column(name = "login", nullable = false)
+    @Column(name="login")
     private String login;
 
-    @Column(name = "name", nullable = false)
+    @Column(name="name")
     private String name;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name="last_name")
     private String last_name;
 
+    @Column(name="dob")
+    private LocalDate dob;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "dob", nullable = false)
-    private Date dob;
-
-    @Column(name = "is_active", nullable = false)
+    @Column(name="is_active")
     private Boolean is_active;
 
     public User() {
     }
 
-    public User(String login, String name, String last_name, Date dob, Boolean is_active) {
+    public User(String login, String name, String last_name, LocalDate dob, Boolean is_active) {
         this.login = login;
         this.name = name;
         this.last_name = last_name;
@@ -42,7 +44,7 @@ public class User implements Serializable {
         this.is_active = is_active;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -58,7 +60,7 @@ public class User implements Serializable {
         return last_name;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
@@ -66,9 +68,10 @@ public class User implements Serializable {
         return is_active;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
+
 
     public void setLogin(String login) {
         this.login = login;
@@ -82,7 +85,7 @@ public class User implements Serializable {
         this.last_name = last_name;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 

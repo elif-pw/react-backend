@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public class UserController {
         return repository.findAll();
     }
 
-    @GetMapping("/findbylogin/{login}")
+    @GetMapping("/login/{login}")
     public String retrieveByLogin(@PathVariable String login) {
         User user = repository.findByLogin(login);
         if (user == null)
@@ -34,7 +35,7 @@ public class UserController {
     @Autowired
     UserService service;
 
-    @PostMapping(value = "/createUser")
+    @PostMapping(value = "/create")
     public String create(@RequestBody User newUser) {
         if (service.lookforLogin(newUser.getLogin()) == null) {
             repository.save(new User(newUser.getLogin(),
@@ -48,20 +49,30 @@ public class UserController {
     }
 
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable long id) {
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable long id) {
+//
+//        Optional<User> studentOptional = repository.findById(id);
+//
+//        if (!studentOptional.isPresent())
+//            throw new ResourceNotFoundException("User", "id", id);
+//
+//        user.setId(id);
+//        repository.save(user);
+//        return ResponseEntity.noContent().build();
+//    }
 
-        Optional<User> studentOptional = repository.findById(id);
-
-        if (!studentOptional.isPresent())
-            throw new ResourceNotFoundException("User", "id", id);
-
-        user.setId(id);
-        repository.save(user);
-        return ResponseEntity.noContent().build();
+    @PutMapping(path = "")
+    public ResponseEntity<User> updateWholeUser(@RequestBody @Valid User updatedUser) {
+        return ResponseEntity.ok().body(repository.save(updatedUser));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PatchMapping(path = "")
+    public ResponseEntity<User> updateUser(@RequestBody @Valid User updatedUser) {
+        return ResponseEntity.ok().body(service.updateUser(updatedUser));
+    }
+
+    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable long id) {
         if(repository.findById(id).isPresent())
             repository.deleteById(id);
@@ -69,7 +80,7 @@ public class UserController {
             throw new ResourceNotFoundException("User", "id", id);
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/id/{id}")
     public User retrieveById(@PathVariable long id) {
         Optional<User> student = repository.findById(id);
 
